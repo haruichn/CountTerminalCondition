@@ -1,6 +1,4 @@
 # 軸補正ツール
-
-## 概要
 HASCデータに含まれるTerminalPositionとTerminalMountの組み合わせを表示するプログラム
 
 ## 使い方
