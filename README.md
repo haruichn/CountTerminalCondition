@@ -1,4 +1,4 @@
-# 軸補正ツール
+# HASCデータの端末位置割合表示ツール
 HASCデータに含まれるTerminalPositionとTerminalMountの組み合わせを表示するプログラム
 
 ## 使い方
