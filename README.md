@@ -16,11 +16,13 @@ HASCデータに含まれるTerminalPositionとTerminalMountの組み合わせ�
 3. CountTerminalCondition.javaと同ディレクトリにdataディレクトリを用意.
 4. dataディレクトリにHASCコーパスのデータを入れる.
 5. 以下のコマンドを実行
+6. outputディレクトリが作成され, そこに補正されたデータが出力される.
+
+##### コマンド
 ```
 javac CountTerminalCondition.java
 java CountTerminalCondition
 ```
-6. outputディレクトリが作成され, そこに補正されたデータが出力される.
 
 
 ### データのディレクトリ構成
