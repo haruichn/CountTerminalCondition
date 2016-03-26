@@ -259,10 +259,14 @@ public class CountTerminalCondition {
     static void writeMapEntry(PrintWriter pw, Map.Entry<String, Integer> e, float meta_file_count) {
         String mount = "";
         String position = "";
-        if (!e.getKey().equals("")) {
-            mount = e.getKey().split("\t")[0];
-            position = e.getKey().split("\t")[1];
+        try{
+            mount = e.getKey().split("\t")[0].split(":")[1];
+            position = e.getKey().split("\t")[1].split(":")[1];
+        } catch (ArrayIndexOutOfBoundsException ex){
+            mount = "";
+            position = "";
         }
+
         String dataRate = String.format("%.2f", e.getValue() / meta_file_count * 100);
         String value = dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int) meta_file_count) + ")";
 
