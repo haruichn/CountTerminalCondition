@@ -9,10 +9,15 @@
 
 
 import java.io.*;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class CountTerminalCondition {
+
+    // Const
+    static final boolean SortByValue = true;
+    static final boolean OutputFile_flag = true;
+    static final String OutputFileName = "result";
+
 
     // TerminalMount&TerminalPositionとそのカウントを補修するハッシュマップ
     static Map<String,Integer> counter = new TreeMap<>();
@@ -111,9 +116,21 @@ public class CountTerminalCondition {
         System.out.println("                                     RESULT");
         System.out.println("=======================================================================================");
 
-        for(Map.Entry<String, Integer> e : counter.entrySet()) {
-            String dataRate = String.format("%.2f", e.getValue()/meta_file_count*100);
-            System.out.println(String.format("%-70s", e.getKey()) + dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int)meta_file_count) +")");
+        if (SortByValue) {
+            for (Map.Entry<String, Integer> e : entriesSortedByValues(counter)) {
+                String dataRate = String.format("%.2f", e.getValue() / meta_file_count * 100);
+                System.out.println(String.format("%-75s", e.getKey()) + dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int) meta_file_count) + ")");
+            }
+        } else {
+            for (Map.Entry<String, Integer> e : counter.entrySet()) {
+                String dataRate = String.format("%.2f", e.getValue() / meta_file_count * 100);
+                System.out.println(String.format("%-75s", e.getKey()) + dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int) meta_file_count) + ")");
+            }
+        }
+
+        // 結果のcsv出力
+        if (OutputFile_flag) {
+            outputCsv(counter, meta_file_count);
         }
     }
 
@@ -176,5 +193,86 @@ public class CountTerminalCondition {
         }
 
     }
+
+    static <K,V extends Comparable<? super V>>
+    SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+                new Comparator<Map.Entry<K,V>>() {
+                    @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+                        int res = e1.getValue().compareTo(e2.getValue());
+                        return res != 0 ? res : 1;
+                    }
+                }
+        );
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
+    }
+
+    static void outputCsv(Map<String,Integer> counter, float meta_file_count){
+
+        // 出力ディレクトリに軸補正用のファイルを作成
+        File outputFile = new File("./"+OutputFileName+".csv");
+        if(outputFile.exists()){
+            outputFile.delete(); //ファイルの削除
+            // ファイルの作成
+            try{
+                outputFile.createNewFile();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+        else {
+            // ファイルの作成
+            try{
+                outputFile.createNewFile();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        // ファイルに書き込み
+        //出力先を作成
+        FileWriter fw = null;  //追記モードでファイル展開
+        try {
+            fw = new FileWriter(outputFile, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PrintWriter pw = new PrintWriter(new BufferedWriter(fw));
+
+        // CSVに書き込み
+        if (SortByValue) {
+            for (Map.Entry<String, Integer> e : entriesSortedByValues(counter)) {
+                writeMapEntry(pw, e, meta_file_count);
+            }
+        } else {
+            for (Map.Entry<String, Integer> e : counter.entrySet()) {
+                writeMapEntry(pw, e, meta_file_count);
+            }
+        }
+
+        //ファイルに書き出す
+        pw.close();
+
+    }
+
+    static void writeMapEntry(PrintWriter pw, Map.Entry<String, Integer> e, float meta_file_count) {
+        String mount = "";
+        String position = "";
+        if (!e.getKey().equals("")) {
+            mount = e.getKey().split("\t")[0];
+            position = e.getKey().split("\t")[1];
+        }
+        String dataRate = String.format("%.2f", e.getValue() / meta_file_count * 100);
+        String value = dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int) meta_file_count) + ")";
+
+        pw.print(mount);
+        pw.print(",");
+        pw.print(position);
+        pw.print(",");
+        pw.print(value);
+        pw.println();
+    }
+
 
 }
