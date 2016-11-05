@@ -241,6 +241,15 @@ public class CountTerminalCondition {
         PrintWriter pw = new PrintWriter(new BufferedWriter(fw));
 
         // CSVに書き込み
+        // タイトル部分
+        pw.print("TerminalMount");
+        pw.print(",");
+        pw.print("TerminalPosition");
+        pw.print(",");
+        pw.print("Rate");
+        pw.println();
+
+        // コンテンツ部分
         if (SortByValue) {
             for (Map.Entry<String, Integer> e : entriesSortedByValues(counter)) {
                 writeMapEntry(pw, e, meta_file_count);
@@ -268,13 +277,17 @@ public class CountTerminalCondition {
         }
 
         String dataRate = String.format("%.2f", e.getValue() / meta_file_count * 100);
-        String value = dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int) meta_file_count) + ")";
+//        String value = dataRate + "% (" + String.valueOf(e.getValue()) + "/" + String.valueOf((int) meta_file_count) + ")";
 
         pw.print(mount);
         pw.print(",");
         pw.print(position);
         pw.print(",");
-        pw.print(value);
+        pw.print(e.getValue());
+        pw.print(",");
+        pw.print(meta_file_count);
+        pw.print(",");
+        pw.print(dataRate);
         pw.println();
     }
 
