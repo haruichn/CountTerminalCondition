@@ -246,6 +246,10 @@ public class CountTerminalCondition {
         pw.print(",");
         pw.print("TerminalPosition");
         pw.print(",");
+        pw.print("File count");
+        pw.print(",");
+        pw.print("Total count");
+        pw.print(",");
         pw.print("Rate");
         pw.println();
 
